@@ -1,0 +1,43 @@
+MEU INGLÊS — publicação no Netlify + biblioteca de pronúncia premium
+
+PARTE 1 — PUBLICAR O APLICATIVO
+1. Acesse https://app.netlify.com/drop
+2. Arraste a pasta descompactada inteira (meu_ingles_netlify) para a página.
+3. O Netlify publicará o index.html e fornecerá um endereço HTTPS.
+4. Abra o endereço no Chrome ou Edge e permita o microfone para usar a Aventura de Pronúncia.
+
+PARTE 2 — GERAR OS ÁUDIOS EM LOTE (SEM BAIXAR UM POR UM)
+Você fará esta etapa uma única vez, no seu computador. O programa lê o backup do seu vocabulário e gera os MP3s automaticamente.
+
+1. No aplicativo Meu Inglês, entre em Configurações > Exportar backup. Salve o arquivo JSON no computador.
+2. Instale o Python 3 caso ainda não tenha: https://www.python.org/downloads/ (no Windows, marque “Add Python to PATH” durante a instalação).
+3. Crie uma conta na ElevenLabs e gere uma API key em https://elevenlabs.io/app/settings/api-keys. A chave é secreta: não a envie por mensagem, não a coloque no HTML e não a publique no Netlify.
+4. Extraia o ZIP do projeto. Coloque o backup JSON dentro da pasta meu_ingles_netlify.
+5. Abra o terminal nessa pasta (Windows: clique na barra de endereço do Explorador, digite cmd e pressione Enter).
+6. Para conferir quantas expressões serão processadas, rode:
+   python gerar_audios.py --backup "CAMINHO-DO-SEU-BACKUP.json" --voice-id teste --dry-run
+   (O ID é ignorado na prévia; pode escrever qualquer texto depois de --voice-id.)
+7. Para ver as vozes disponíveis na sua conta e seus IDs, rode:
+   python gerar_audios.py --listar-vozes
+   O programa pedirá a API key de forma oculta. Copie o ID da voz inglesa que você escolheu.
+8. Gere os áudios com:
+   python gerar_audios.py --backup "CAMINHO-DO-SEU-BACKUP.json" --voice-id "COLE-AQUI-O-ID-DA-VOZ"
+   Digite s para confirmar. A chave será solicitada de forma oculta e não será salva no projeto.
+9. O programa cria os MP3s na pasta audio/ e atualiza audio/manifest.json. Se houver falhas ou interrupção, rode o mesmo comando novamente: arquivos já gerados serão ignorados e só os faltantes serão tentados.
+10. Publique novamente a pasta inteira meu_ingles_netlify no Netlify. Não publique o backup JSON nem compartilhe sua API key.
+
+COMO FUNCIONA
+- O app procura automaticamente o áudio premium local para cada palavra/frase do vocabulário.
+- Se não houver MP3 correspondente, usa a voz do dispositivo como alternativa.
+- Os áudios ficam hospedados junto do site: depois de gerados, o app não precisa chamar a API para reproduzi-los.
+- O script gera um MP3 para cada expressão inglesa e frase de exemplo única encontrada no backup. Textos repetidos são gerados uma única vez. Use --only-words se quiser gerar apenas as expressões dos cartões.
+- A geração consome créditos da sua conta ElevenLabs. O modo --dry-run mostra quantidade e caracteres antes de gastar.
+- A chave API é usada apenas no seu computador durante a geração. Nunca a coloque em arquivos públicos.
+
+AJUDA
+Se o comando python não funcionar no Windows, tente py no lugar de python.
+O app continua funcionando sem a biblioteca premium; nesse caso, usa a voz disponível no navegador/dispositivo.
+
+
+OBSERVAÇÃO SOBRE ESTE BACKUP
+O backup enviado em 04/11/2026 contém 235 cartões. Com as 235 frases de exemplo, a prévia deve listar até 470 textos únicos (pode ser menos se houver repetições). O arquivo CSV exportado contém o mesmo vocabulário; o JSON é preferível porque também preserva o progresso.
